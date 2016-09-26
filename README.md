@@ -13,7 +13,7 @@
 * [Hadoop](http://hadoop.apache.org/) `2.7.3`
 * [Accumulo](http://accumulo.apache.org/) `1.7.2`
 
-## Tutorial description
+## Tutorial description (each example has additional informtion in comments)
 
 * [HelloWorld.scala](src/main/scala/com/azavea/mesatrellis/HelloWorld.scala)
   * A common scala HelloWorld
@@ -24,7 +24,37 @@
 * [CreateNDVIPng.scala](src/main/scala/com/azavea/mesatrellis/raster/CreateNDVIPng.scala)
   * An example of a hand written ingest job
 
-## GeoDocker Environment
+## Building assembly
+
+You can build demo with all examples:
+
+```bash
+./sbt assembly
+```
+
+Result fat jar is `target/scala-2.11/mesatrellis-assembly-0.1.0-SNAPSHOT.jar`
+
+## [GeoDocker Cluster](https://github.com/geodocker/geodocker)
+
+To compile and run this demo, we prepared an [environment](https://github.com/geodocker/geodocker). To run cluster we have a bit modified [docker-compose.yml](docker-compose.yml) file:
+
+* To run cluster:
+  ```bash
+    docker-compose up
+  ```
+
+  To check that cluster is operating normally check pages availability:
+  * Hadoop [http://localhost:50070/](http://localhost:50070/)
+  * Accumulo [http://localhost:50095/](http://localhost:50095/)
+  * Spark [http://localhost:8080/](http://localhost:8080/)
+
+  To check containers status is possible using following command:
+
+  ```bash
+  docker ps -a | grep geodocker
+  ```
+
+ More information avaible in a [GeoDocker cluster](https://github.com/geodocker/geodocker) repo.
 
 ## How to run examples
 
