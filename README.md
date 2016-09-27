@@ -54,9 +54,45 @@ To check containers status is possible using following command:
   docker ps -a | grep geodocker
   ```
 
+Mounted volumes into Spark master continaer:
+
+```bash
+  - '${PWD}/data/:/data/data'
+  - '${PWD}/target/scala-2.11:/data/jars'
+```
+
 More information avaible in a [GeoDocker cluster](https://github.com/geodocker/geodocker) repo.
 
 ## How to run examples
+
+* Log into Spark master container:
+  ```bash
+    docker exec -it geotrellisgeomesatemplateproject_spark-master_1 bash
+  ```
+
+* Go into `/data/jar` dir:
+  ```bash
+    cd /data/jar
+  ```
+
+* Run job:
+  ```bash
+  cd /data/jar
+  CLASS_NAME=com.azavea.mesatrellis.spark.SparkHelloWorld
+  spark-submit \
+    --class ${CLASS_NAME} \
+    --driver-memory=2G \
+    ./mesatrellis-assembly-0.1.0-SNAPSHOT.jar
+  ```
+
+Class name can be any main class from the fat jar
+
+* Runing a simple scala application (HelloWorld as an example):
+
+  ```bash
+    CLASS_NAME=com.azavea.mesatrellis.HelloWorld
+    java -cp mesatrellis-assembly-0.1.0-SNAPSHOT.jar ${CLASS_NAME}
+  ```
 
 ## License
 

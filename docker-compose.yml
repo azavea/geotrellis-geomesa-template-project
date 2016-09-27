@@ -8,7 +8,7 @@ services:
         ports:
           - 50070:50070
         # volumes:
-        #   - /data/gt/hdfs:/data/hdfs
+        #   - '/data/gt/hdfs:/data/hdfs'
     hdfs-data:
         image: quay.io/geodocker/hdfs:latest
         command: data
@@ -17,13 +17,13 @@ services:
         depends_on:
           - hdfs-name
         # volumes:
-        #  - /data/gt/hdfs:/data/hdfs
+        #  - '/data/gt/hdfs:/data/hdfs'
     zookeeper:
         image: quay.io/geodocker/zookeeper:latest
         ports:
           - 2181:2181
         #  volumes:
-        #   - /data/gt/hdfs:/data/hdfs
+        #   - '/data/gt/hdfs:/data/hdfs'
     accumulo-master:
       image: quay.io/geodocker/accumulo:latest
       command: master --auto-init
@@ -65,8 +65,8 @@ services:
         depends_on:
           - hdfs-data
         volumes:
-          - data:/data/
-          - target/scala-2.11:/jars
+          - '${PWD}/data/:/data/data'
+          - '${PWD}/target/scala-2.11:/data/jars'
     spark-worker:
         image: quay.io/geodocker/spark:latest
         command: worker

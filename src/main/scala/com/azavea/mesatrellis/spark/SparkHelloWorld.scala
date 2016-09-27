@@ -18,6 +18,7 @@ object SparkHelloWorld {
     // Shift every char +1 to the right, collect data on a driver and making a new string
     val sentence = rdd.map(c => c + 1).collect().mkString
 
+    // 73102109109112337210211285115102109109106116
     println(sentence)
 
     // Stop Spark context
