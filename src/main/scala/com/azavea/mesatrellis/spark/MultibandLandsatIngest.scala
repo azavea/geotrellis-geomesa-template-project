@@ -32,8 +32,8 @@ import scala.io.StdIn
   *  3. Reprojection into WebMercator into ZoomedLayoutScheme
   *  4. Pyramiding up and writing everything into Accumulo
   */
-object LandsatIngest {
-  val inputPath  = "file://" + new File("data/rgb-nir.tif").getAbsolutePath
+object MultibandLandsatIngest {
+  val inputPath  = "file://" + new File("data/landsat/rgb-nir.tif").getAbsolutePath
 
   def main(args: Array[String]): Unit = {
 

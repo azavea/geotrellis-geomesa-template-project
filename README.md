@@ -19,7 +19,7 @@
   * A common scala HelloWorld
 * [SparkHelloWorld.scala](src/main/scala/com/azavea/mesatrellis/spark/SparkHelloWorld.scala)
   * A Spark HelloWorld
-* [LandsatIngest.scala](src/main/scala/com/azavea/mesatrellis/spark/LandsatIngest.scala)
+* [MultibandLandsatIngest.scala](src/main/scala/com/azavea/mesatrellis/spark/MultibandLandsatIngest.scala)
   * An example of a hand written ingest job
 * [CreateNDVIPng.scala](src/main/scala/com/azavea/mesatrellis/raster/CreateNDVIPng.scala)
   * An example of a hand written ingest job
@@ -43,18 +43,18 @@ To compile and run this demo, we prepared an [environment](https://github.com/ge
     docker-compose up
   ```
 
-  To check that cluster is operating normally check pages availability:
+To check that cluster is operating normally check pages availability:
   * Hadoop [http://localhost:50070/](http://localhost:50070/)
   * Accumulo [http://localhost:50095/](http://localhost:50095/)
   * Spark [http://localhost:8080/](http://localhost:8080/)
 
-  To check containers status is possible using following command:
+To check containers status is possible using following command:
 
   ```bash
   docker ps -a | grep geodocker
   ```
 
- More information avaible in a [GeoDocker cluster](https://github.com/geodocker/geodocker) repo.
+More information avaible in a [GeoDocker cluster](https://github.com/geodocker/geodocker) repo.
 
 ## How to run examples
 
