@@ -65,7 +65,7 @@ services:
         depends_on:
           - hdfs-data
         volumes:
-          - '${PWD}/data/:/data/data'
+          - '${PWD}/data/landsat:/data/landsat'
           - '${PWD}/target/scala-2.11:/data/jars'
     spark-worker:
         image: quay.io/geodocker/spark:latest
