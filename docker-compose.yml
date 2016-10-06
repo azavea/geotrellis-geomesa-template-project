@@ -25,7 +25,7 @@ services:
         #  volumes:
         #   - '/data/gt/hdfs:/data/hdfs'
     accumulo-master:
-      image: quay.io/geodocker/accumulo:latest
+      image: quay.io/geodocker/accumulo-geomesa:latest
       command: master --auto-init
       environment:
         HADOOP_MASTER_ADDRESS: hdfs-name
@@ -34,7 +34,7 @@ services:
       depends_on:
         - zookeeper
     accumulo-monitor:
-        image: quay.io/geodocker/accumulo:latest
+        image: quay.io/geodocker/accumulo-geomesa:latest
         command: monitor
         environment:
           HADOOP_MASTER_ADDRESS: hdfs-name
@@ -45,8 +45,17 @@ services:
           - zookeeper
           - accumulo-master
     accumulo-tserver:
-        image: quay.io/geodocker/accumulo:latest
+        image: quay.io/geodocker/accumulo-geomesa:latest
         command: tserver
+        environment:
+          HADOOP_MASTER_ADDRESS: hdfs-name
+          ZOOKEEPERS: zookeeper
+        depends_on:
+          - zookeeper
+          - accumulo-master
+    accumulo-gc:
+        image: quay.io/geodocker/accumulo-geomesa:latest
+        command: gc
         environment:
           HADOOP_MASTER_ADDRESS: hdfs-name
           ZOOKEEPERS: zookeeper
