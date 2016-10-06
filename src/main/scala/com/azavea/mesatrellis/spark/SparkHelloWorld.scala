@@ -9,7 +9,12 @@ object SparkHelloWorld {
   def main(args: Array[String]): Unit = {
 
     // Initialise spark context
+    // config definition to run app via spark-submit
     val conf = new SparkConf().setAppName("HelloWorld")
+    // config definition to run spark app through sbt / IDE
+    // if you want to launch this app via sbt run or from IDE don't forget to set Spark master to local / hostname
+    // just replace code line above by the line below 
+    // val conf = new SparkConf().setAppName("HelloWorld").setMaster("local[*]") // or spark://spark-master:7077
     implicit val sc = new SparkContext(conf)
 
     // Making and RDD from a char array

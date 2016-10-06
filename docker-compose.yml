@@ -84,3 +84,15 @@ services:
           SPARK_MASTER: spark-master
         depends_on:
           - spark-master
+    idea:
+        image: daunnc/idea:2016.2
+        environment:
+          DISPLAY: *your-hostmachine-ip*:0
+        ports:
+          # ports for possible local Spark nodes
+          - 4050:4040
+          - 4051:4041
+        volumes:
+          - '${PWD}/data/landsat:/data/landsat'
+          - '${PWD}/target/scala-2.11:/data/jars'
+          - '${PWD}:/data/project'

@@ -19,11 +19,14 @@ resolvers += Resolver.bintrayRepo("azavea", "geotrellis")
 
 libraryDependencies ++= Seq(
   // GeoTrellis deps, all deps are transitive
-  "com.azavea.geotrellis" %% "geotrellis-spark" % "1.0.0-SNAPSHOT",
-  "com.azavea.geotrellis" %% "geotrellis-accumulo" % "1.0.0-SNAPSHOT",
+  "com.azavea.geotrellis" %% "geotrellis-spark" % "1.0.0-54905b6",
+  "com.azavea.geotrellis" %% "geotrellis-accumulo" % "1.0.0-54905b6",
   // Our GeoMesa integration plugin, includes compatible GeoMesa version
-  "com.azavea.geotrellis" %% "geotrellis-geomesa" % "1.0.0-SNAPSHOT",
+  "com.azavea.geotrellis" %% "geotrellis-geomesa" % "1.0.0-54905b6",
   // Spark dep marked as provided in order not to include this artifact into assembly (fat) jar
+  // If you want to run application from SBT or from Intelij IDEA / some other IDE
+  // be sure that you removed "provided", as app would run a separate standalone Spark driver node
+  // which would require spark-core
   "org.apache.spark" %% "spark-core" % "2.0.0" % "provided",
   "org.scalatest"    %%  "scalatest" % "3.0.0" % "test"
 )
