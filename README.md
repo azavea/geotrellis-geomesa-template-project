@@ -82,16 +82,30 @@ More information avaible in a [GeoDocker cluster](https://github.com/geodocker/g
 
   Class name can be any main class from the fat jar.
 
-* Runing a simple scala application (HelloWorld as an example):
+* Run a simple scala application (HelloWorld as an example):
 
   ```bash
   CLASS_NAME=com.azavea.mesatrellis.HelloWorld
   java -cp ./data/jars/mesatrellis-assembly-0.1.0-SNAPSHOT.jar ${CLASS_NAME}
   ```
 
+* Run examples through SBT / IDE
+
+  Be sure, that Spark dependency is not marked as `"provided"`, more comments can be found in a [build.sbt](build.sbt) file.
+
+  In [docker-compose.yml](docker-compose.yml) you can notice a commented out section, which start Intelij IDEA 2016.2 Community
+  edition in a docker container with X11 socker forwarding. `daunnc/idea:mesatrellis` is an image with downloaded most of the required
+  java deps into local maven repos. However you can use other tags, which contain "clean" images.
+
 ## GeoTrellis examples
 
-For GeoTrellis tests you need tiles, it is possible Landsat tiles. Prepared instructions can be found [here](data/landsat).
+For GeoTrellis tests you need tiles, it is possible Landsat 8 tiles. Prepared instructions can be found [here](data/landsat).
+
+## Possible issues
+
+Running [GeoDocker Cluster](https://github.com/geodocker/geodocker) on Windows be sure that you have `libxml2.dll`
+and `libzma-5.dll` in your `Windows/System32` and `Windows/SysWOW64` folders. It is necessary for correct
+[GeoDocker Accumulo](https://github.com/geodocker/geodocker-accumulo) start.
 
 ## License
 
