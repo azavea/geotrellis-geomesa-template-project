@@ -1,0 +1,9 @@
+version: '2'
+services:
+    accumulo-tracer:
+        image: quay.io/geodocker/accumulo-geomesa:latest
+        net: host
+        command: tracer
+        environment:
+          HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
+          ZOOKEEPERS: ${ZOOKEEPERS}

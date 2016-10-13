@@ -9,6 +9,13 @@ services:
           - 50070:50070
         # volumes:
         #   - '/data/gt/hdfs:/data/hdfs'
+    hdfs-sname:
+        image: quay.io/geodocker/hdfs:latest
+        command: sname
+        environment:
+          HADOOP_MASTER_ADDRESS: hdfs-name        
+        # volumes:
+        #   - '/data/gt/hdfs:/data/hdfs'
     hdfs-data:
         image: quay.io/geodocker/hdfs:latest
         command: data
@@ -33,6 +40,15 @@ services:
         ACCUMULO_PASSWORD: GisPwd
       depends_on:
         - zookeeper
+    # accumulo-tracer:
+    #     image: quay.io/geodocker/accumulo-geomesa:latest
+    #     command: tracer
+    #     environment:
+    #       HADOOP_MASTER_ADDRESS: hdfs-name
+    #       ZOOKEEPERS: zookeeper        
+    #     depends_on:
+    #       - zookeeper
+    #       - accumulo-master
     accumulo-monitor:
         image: quay.io/geodocker/accumulo-geomesa:latest
         command: monitor

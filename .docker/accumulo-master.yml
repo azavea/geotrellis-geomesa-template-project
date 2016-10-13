@@ -1,0 +1,11 @@
+version: '2'
+services:
+    accumulo-master:
+      image: quay.io/geodocker/accumulo-geomesa:latest
+      net: host
+      command: master --auto-init
+      environment:
+        HADOOP_MASTER_ADDRESS: ${HADDOP_MASTER_ADDRESS}
+        ZOOKEEPERS: ${ZOOKEEPERS}
+        ACCUMULO_PASSWORD: GisPwd
+

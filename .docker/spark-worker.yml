@@ -1,0 +1,10 @@
+version: '2'
+services:
+    spark-worker:
+        image: quay.io/geodocker/spark:latest
+        net: host
+        command: worker
+        environment:
+          HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
+          SPARK_MASTER: ${SPARK_MASTER}
+    

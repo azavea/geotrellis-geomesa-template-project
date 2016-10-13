@@ -1,0 +1,12 @@
+version: '2'
+services:
+    spark-master:
+        image: quay.io/geodocker/spark:latest
+        net: host
+        command: master
+        environment:
+          HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}        
+        volumes:
+          - '${PWD}/data/landsat:/data/landsat'
+          - '${PWD}/target/scala-2.11:/data/jars'
+  

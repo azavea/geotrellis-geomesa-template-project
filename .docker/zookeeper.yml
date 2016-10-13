@@ -1,0 +1,5 @@
+version: '2'
+services:
+    zookeeper:
+        image: quay.io/geodocker/zookeeper:latest
+        net: host

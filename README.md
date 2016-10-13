@@ -107,6 +107,35 @@ Running [GeoDocker Cluster](https://github.com/geodocker/geodocker) on Windows b
 and `libzma-5.dll` in your `Windows/System32` and `Windows/SysWOW64` folders. It is necessary for correct
 [GeoDocker Accumulo](https://github.com/geodocker/geodocker-accumulo) start.
 
+## Runing [GeoDocker Cluster](https://github.com/geodocker/geodocker) distributed
+
+We [prepared](.docker) decomposed docker-compose files for each process (separated, experimental). The idea is to map docker network on machines network. From the one hand that makes possible to get rid of network overhead, from the other makes easier to understnad how processes resolve addresses.
+
+To run each process use: `dokcer-compose -f dockercomposefilename.yml up`
+
+Be carefull with docker compose files settings, for each container should be setted: `${HADOOP_MASTER_ADDRESS}` and `${ZOOKEEPERS}`, all docker compose files use host machine network, that means that additional attention should be payed to possible ports conflicts.
+
+Containers hould be started in the following order:
+
+* Zookeepers (on each node, or on one node; current docker compose makes possible to run it only in a single node mode)
+* Hadoop 
+  * [hadoop-name](.docker/hadoop-name.yml), it is a _master_ process
+  * [hadoop-sname](.docker/hadoop-sname.yml), it is a _master_ process
+  * [hadoop-data](.docker/hadoop-data.yml), it is a _slave_ process, as much as you want / need to have
+* Accumulo
+  * [accumulo-master](.docker/accumulo-master.yml), it is a _master_ process, inits HDFS Accumulo volumes on the first start
+  * [accumulo-tracer](.docker/accumulo-tracer.yml), it's a _master_ process
+  * [accumulo-gc](.docker/accumulo-gc.yml), it's a _master_ process
+  * [accumulo-monitor](.docker/accumulo-gc.yml), it's a _master_ process (web ui)
+  * [accumulo-tserver](.docker/accumulo-tserver.yml), it's a _slave_ process, as much as you want / need to have
+* Spark
+  * [spark-master](.docker/spark-master.yml), _master_ process
+  * [spark-worker](.docker/spark-worker.yml), _slave_ process
+
+And (in addition, a separate GUI container):
+* Intelij IDEA
+  * [idea](.docker/idea.yml), be carefull with its configs
+
 ## License
 
 * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
