@@ -114,7 +114,7 @@ Generally it is safe to collocate all the `master` services on one host and scal
 As each component becomes a bottleneck or competes for resources it may be split out into its own node.
 Likewise while the `worker` processes benefit from collocation they may be spread over individual nodes and indeed over clusters.
 
-We prepared decomposed docker-compose files that illustrate the minimum separation between nonscalable, [master](./docker/master.yml) components and [worker](./docker/worker.yml) components. If we map the docker network to machines network these docker-compose files may be used as bases for deployment.
+We prepared decomposed docker-compose files that illustrate the minimum separation between nonscalable, [master](./.docker/master.yml) components and [worker](./.docker/worker.yml) components. If we map the docker network to machines network these docker-compose files may be used as bases for deployment.
 
 To run each process use: `dokcer-compose -f dockercomposefilename.yml up`
 
