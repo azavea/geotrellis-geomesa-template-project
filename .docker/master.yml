@@ -6,18 +6,15 @@ services:
         command: name
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
-
     hdfs-sname:
         image: quay.io/geodocker/hdfs:latest
         net: host
         command: sname
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
-
     zookeeper:
         image: quay.io/geodocker/zookeeper:latest
         net: host
-
     accumulo-master:
       image: quay.io/geodocker/accumulo-geomesa:latest
       net: host
@@ -26,7 +23,6 @@ services:
         HADOOP_MASTER_ADDRESS: ${HADDOP_MASTER_ADDRESS}
         ZOOKEEPERS: ${ZOOKEEPERS}
         ACCUMULO_PASSWORD: GisPwd
-
     accumulo-monitor:
         image: quay.io/geodocker/accumulo-geomesa:latest
         net: host
@@ -34,7 +30,6 @@ services:
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
           ZOOKEEPERS: ${ZOOKEEPERS}
-
     accumulo-gc:
         image: quay.io/geodocker/accumulo-geomesa:latest
         net: host
@@ -42,7 +37,6 @@ services:
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
           ZOOKEEPERS: ${ZOOKEEPERS}
-
     accumulo-tracer:
         image: quay.io/geodocker/accumulo-geomesa:latest
         net: host
@@ -50,13 +44,12 @@ services:
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
           ZOOKEEPERS: ${ZOOKEEPERS}
-
     spark-master:
         image: quay.io/geodocker/spark:latest
         net: host
         command: master
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
-        volumes:
-          - '${PWD}/data/landsat:/data/landsat'
-          - '${PWD}/target/scala-2.11:/data/jars'
+        # volumes:
+        #   - '${PWD}/data/landsat:/data/landsat'
+        #   - '${PWD}/target/scala-2.11:/data/jars'

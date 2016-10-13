@@ -6,7 +6,6 @@ services:
         command: data
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
-
     accumulo-tserver:
         image: quay.io/geodocker/accumulo-geomesa:latest
         net: host
@@ -14,7 +13,6 @@ services:
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
           ZOOKEEPERS: ${ZOOKEEPERS}
-
     spark-worker:
         image: quay.io/geodocker/spark:latest
         net: host
