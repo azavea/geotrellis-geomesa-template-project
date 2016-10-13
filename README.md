@@ -109,32 +109,108 @@ and `libzma-5.dll` in your `Windows/System32` and `Windows/SysWOW64` folders. It
 
 ## Runing [GeoDocker Cluster](https://github.com/geodocker/geodocker) distributed
 
-We [prepared](.docker) decomposed docker-compose files for each process (separated, experimental). The idea is to map docker network on machines network. From the one hand that makes possible to get rid of network overhead, from the other makes easier to understnad how processes resolve addresses.
+There are many ways to deploy the required components depending on the load the cluster will be facing and existing infrastructure.
+Generally it is safe to collocate all the `master` services on one host and scale `worker` nodes.
+As each component becomes a bottleneck or competes for resources it may be split out into its own node.
+Likewise while the `worker` processes benefit from collocation they may be spread over individual nodes and indeed over clusters.
+
+We prepared decomposed docker-compose files that illustrate the minimum separation between nonscalable, [master](./docker/master.yml) components and [worker](./docker/worker.yml) components. If we map the docker network to machines network these docker-compose files may be used as bases for deployment.
 
 To run each process use: `dokcer-compose -f dockercomposefilename.yml up`
 
-Be carefull with docker compose files settings, for each container should be setted: `${HADOOP_MASTER_ADDRESS}` and `${ZOOKEEPERS}`, all docker compose files use host machine network, that means that additional attention should be payed to possible ports conflicts.
+However this does not solve the resource discovery problem among these components and central pieces, like HDFS master address and Zookeeper address, must be provided as parameters.
+Each container should at least set: `${HADOOP_MASTER_ADDRESS}` and `${ZOOKEEPERS}` environment variables.
+All docker-compose files use host machine network.
+This means that additional attention should be payed to possible ports conflicts.
 
 Containers hould be started in the following order:
 
-* Zookeepers (on each node, or on one node; current docker compose makes possible to run it only in a single node mode)
-* Hadoop 
-  * [hadoop-name](.docker/hadoop-name.yml), it is a _master_ process
-  * [hadoop-sname](.docker/hadoop-sname.yml), it is a _master_ process
-  * [hadoop-data](.docker/hadoop-data.yml), it is a _slave_ process, as much as you want / need to have
-* Accumulo
-  * [accumulo-master](.docker/accumulo-master.yml), it is a _master_ process, inits HDFS Accumulo volumes on the first start
-  * [accumulo-tracer](.docker/accumulo-tracer.yml), it's a _master_ process
-  * [accumulo-gc](.docker/accumulo-gc.yml), it's a _master_ process
-  * [accumulo-monitor](.docker/accumulo-gc.yml), it's a _master_ process (web ui)
-  * [accumulo-tserver](.docker/accumulo-tserver.yml), it's a _slave_ process, as much as you want / need to have
-* Spark
-  * [spark-master](.docker/spark-master.yml), _master_ process
-  * [spark-worker](.docker/spark-worker.yml), _slave_ process
+### Zookeeper
 
-And (in addition, a separate GUI container):
-* Intelij IDEA
-  * [idea](.docker/idea.yml), be carefull with its configs
+ * [zookeeper](.docker/zookeeper.yml)(single/scale)
+
+Usually one instance is sufficient.
+Multiple instance provide high-availability as hot-standby.
+
+### Hadoop HDFS
+
+  * [hadoop-name](.docker/hadoop-name.yml) (single)
+ HDFS Namenode, provides filesystem directory service.
+  * [hadoop-sname](.docker/hadoop-sname.yml) (single)
+ HDFS Secondary Namenode, provides HDFS checkpoints when merging the HDFS editlogs with fsimage.
+  * [hadoop-data](.docker/hadoop-data.yml) (multiple/scale)
+ HDFS Datanode, manages HDFS block storage and serves clients referred by namenode, scale for added storage.
+
+All roles of HDFS cluster are configured by their copies of `core-site.xml` and `hdfs-site.xml` files.
+`HADOOP_MASTER_ADDRESS` environment variable is used to generate this bare-bone configuration.
+In all cases `HADOOP_MASTER_ADDRESS` should be the ip/hostname where `hadoop-name` container is running.
+
+### Accumulo
+
+  * [accumulo-master](.docker/accumulo-master.yml) (single)
+  Provides tablet directory, provides central query point, delegates queries to tablet servers, re-balances the Accumulo cluster.
+  * [accumulo-tracer](.docker/accumulo-tracer.yml) (single/optional)
+  Collects tracers from query clients for debugging.
+  * [accumulo-gc](.docker/accumulo-gc.yml), (single/multiple)
+  Removes Accumulo HDFS files no longer in use by Accumulo. Multiple instances provide hot-standby.
+  * [accumulo-monitor](.docker/accumulo-gc.yml) (single/multiple)
+  Provides Accumulo cluster status Web UI page. Multiple instances provide hot-standby.
+  * [accumulo-tserver](.docker/accumulo-tserver.yml)(multiple/scale)
+  Manages Accumulo tablets on HDFS, components of an accumulo table. Has in-memory record cache.
+
+#### Reference
+  * [Accumulo Architecture](http://accumulo.apache.org/1.6/accumulo_user_manual#_components)
+
+#### Dependencies
+  * [Hadoop HDFS](#Hadoop-HDFS): tablet file storage, shared class-path
+  * [Zookeeper](#Zookeeper): Instance configuration, authentication, shared cluster state
+
+Accumulo requires valid Hadoop configuration, at a minimum `core-site.xml`.
+This file is generated from `HADOOP_MASTER_ADDRESS` in a same manner used for HDFS containers themselves.
+Alternatively if a valid HDFS configuration already exists, for instance if HDFS is not provided by GeoDocker containers, it may be volume mounted to these containers on `/etc/hadoop/conf`.
+
+Accumulo tserver containers find Accumulo master through lookup of `INSTANCE_NAME` in `ZOOKEEPERS`.
+Similarly Accumulo clients, like spark jobs, required a zookeeper address along with instance name to find and query the Accumulo master.
+
+#### Collocation
+
+`accumulo-tserver` benefits with being collocated with `hadoop-data` containers. However, this is not required and tablet server in-memory cache is designed to mitigate scenarios where these services are not collocated.
+
+### Spark
+
+  * [spark-master](.docker/spark-master.yml) (single)
+  Provides cluster manager, scheduling spark tasks to be run on available executors.
+  * [spark-worker](.docker/spark-worker.yml) (single/scale)
+  Spark worker is a container for spark executors which in turn execute specific spark job tasks.
+
+These containers provide [Spark standalone cluster](http://spark.apache.org/docs/latest/spark-standalone.html).
+Alternatives include deploying spark through [YARN](http://spark.apache.org/docs/latest/running-on-yarn.html) and [Mesos](http://spark.apache.org/docs/latest/running-on-mesos.html).
+
+Currently GeoDocker does not provide containers for deploying YARN or Mesos.
+
+#### Collocation
+
+`spark-worker` (or any spark executor in general) benefits from being collocated with HDFS datanodes.
+When reading files directly from HDFS spark tasks will be distributed with preference for executors that are hosted on the same node as the HDFS blocks.
+This mechanism uses the configured host machine name to decide when an executor is collocated with HDFS block.
+Therefore it is critical that in those cases both HDFS and spark services are bound to the same interface.
+
+`spark-worker` also benefits from being collocated with Accumulo tserver.
+During query planning the client queries Accumulo master, which provides tablet distribution, to determine how to distribute tasks that will read from Accumulo.
+
+
+### Intelij IDEA / Spark Driver
+  * [idea](.docker/idea.yml)
+  Driver program, launched either by `spark-submit` or IntelLiJ IDEA
+  _Note_: be mindful of configurations for Idea container
+
+Some container/machine will start the JVM that creates the `SparkCotnext`, this is the driver program.
+It will communicate with `spark-master` to request executor resources and then with `spark-worker` containers during task execution.
+In spark standalone mode this process will always be outside of the Spark executors.
+Notably YARN cluster mode YARN is asked to allocate a YARN container for the driver which may be placed on one of the YARN workers, alongside a YARN container hosting a spark executor.
+
+This container should have a stable network connection to `spark-master` and `spark-executor`s as it will be pushing tasks and collecting their results.
+
 
 ## License
 
