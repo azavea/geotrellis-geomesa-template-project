@@ -2,7 +2,7 @@ version: '2'
 services:
     hdfs-sname:
         image: quay.io/geodocker/hdfs:latest
-        net: host
+        network_mode: host
         command: sname
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}

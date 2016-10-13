@@ -2,20 +2,20 @@ version: '2'
 services:
     hdfs-data:
         image: quay.io/geodocker/hdfs:latest
-        net: host
+        network_mode: host
         command: data
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
     accumulo-tserver:
         image: quay.io/geodocker/accumulo-geomesa:latest
-        net: host
+        network_mode: host
         command: tserver
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
           ZOOKEEPERS: ${ZOOKEEPERS}
     spark-worker:
         image: quay.io/geodocker/spark:latest
-        net: host
+        network_mode: host
         command: worker
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}

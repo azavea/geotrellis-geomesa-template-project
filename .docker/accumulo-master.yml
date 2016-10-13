@@ -2,7 +2,7 @@ version: '2'
 services:
     accumulo-master:
       image: quay.io/geodocker/accumulo-geomesa:latest
-      net: host
+      network_mode: host
       command: master --auto-init
       environment:
         HADOOP_MASTER_ADDRESS: ${HADDOP_MASTER_ADDRESS}

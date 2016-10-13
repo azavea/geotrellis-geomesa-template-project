@@ -2,22 +2,22 @@ version: '2'
 services:
     hdfs-name:
         image: quay.io/geodocker/hdfs:latest
-        net: host
+        network_mode: host
         command: name
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
     hdfs-sname:
         image: quay.io/geodocker/hdfs:latest
-        net: host
+        network_mode: host
         command: sname
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
     zookeeper:
         image: quay.io/geodocker/zookeeper:latest
-        net: host
+        network_mode: host
     accumulo-master:
       image: quay.io/geodocker/accumulo-geomesa:latest
-      net: host
+      network_mode: host
       command: master --auto-init
       environment:
         HADOOP_MASTER_ADDRESS: ${HADDOP_MASTER_ADDRESS}
@@ -25,28 +25,28 @@ services:
         ACCUMULO_PASSWORD: GisPwd
     accumulo-monitor:
         image: quay.io/geodocker/accumulo-geomesa:latest
-        net: host
+        network_mode: host
         command: monitor
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
           ZOOKEEPERS: ${ZOOKEEPERS}
     accumulo-gc:
         image: quay.io/geodocker/accumulo-geomesa:latest
-        net: host
+        network_mode: host
         command: gc
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
           ZOOKEEPERS: ${ZOOKEEPERS}
     accumulo-tracer:
         image: quay.io/geodocker/accumulo-geomesa:latest
-        net: host
+        network_mode: host
         command: tracer
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
           ZOOKEEPERS: ${ZOOKEEPERS}
     spark-master:
         image: quay.io/geodocker/spark:latest
-        net: host
+        network_mode: host
         command: master
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}

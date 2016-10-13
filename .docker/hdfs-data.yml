@@ -2,7 +2,7 @@ version: '2'
 services:
     hdfs-data:
         image: quay.io/geodocker/hdfs:latest
-        net: host
+        network_mode: host
         command: data
         environment:
           HADOOP_MASTER_ADDRESS: ${HADOOP_MASTER_ADDRESS}
