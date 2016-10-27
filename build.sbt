@@ -17,12 +17,14 @@ scalacOptions ++= Seq(
 // Resolver is a repository url, to download GeoTrellis snapshot / sha jars
 resolvers += Resolver.bintrayRepo("azavea", "geotrellis")
 
+val geotrellisVersion = "1.0.0-cd1ca27"
+
 libraryDependencies ++= Seq(
   // GeoTrellis deps, all deps are transitive
-  "com.azavea.geotrellis" %% "geotrellis-spark" % "1.0.0-54905b6",
-  "com.azavea.geotrellis" %% "geotrellis-accumulo" % "1.0.0-54905b6",
+  "com.azavea.geotrellis" %% "geotrellis-spark" % geotrellisVersion,
+  "com.azavea.geotrellis" %% "geotrellis-accumulo" % geotrellisVersion,
   // Our GeoMesa integration plugin, includes compatible GeoMesa version
-  "com.azavea.geotrellis" %% "geotrellis-geomesa" % "1.0.0-54905b6",
+  "com.azavea.geotrellis" %% "geotrellis-geomesa" % geotrellisVersion,
   // Spark dep marked as provided in order not to include this artifact into assembly (fat) jar
   // If you want to run application from SBT or from Intelij IDEA / some other IDE
   // be sure that you removed "provided", as app would run a separate standalone Spark driver node
@@ -35,11 +37,8 @@ libraryDependencies ++= Seq(
 // bad signatures and resolve conflicts by taking the first
 // versions of shared packaged types.
 assemblyMergeStrategy in assembly := {
-  case "reference.conf" => MergeStrategy.concat
-  case "application.conf" => MergeStrategy.concat
-  case "META-INF/MANIFEST.MF" => MergeStrategy.discard
-  case "META-INF\\MANIFEST.MF" => MergeStrategy.discard
-  case "META-INF/ECLIPSEF.RSA" => MergeStrategy.discard
-  case "META-INF/ECLIPSEF.SF" => MergeStrategy.discard
+  case "reference.conf" | "application.conf"            => MergeStrategy.concat
+  case "META-INF/MANIFEST.MF" | "META-INF\\MANIFEST.MF" => MergeStrategy.discard
+  case "META-INF/ECLIPSEF.RSA" | "META-INF/ECLIPSEF.SF" => MergeStrategy.discard
   case _ => MergeStrategy.first
 }

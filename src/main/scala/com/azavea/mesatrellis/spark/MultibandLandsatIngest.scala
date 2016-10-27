@@ -1,7 +1,5 @@
 package com.azavea.mesatrellis.spark
 
-import java.io.File
-
 import geotrellis.proj4._
 import geotrellis.raster._
 import geotrellis.raster.resample._
@@ -13,10 +11,14 @@ import geotrellis.spark.io.index._
 import geotrellis.spark.pyramid._
 import geotrellis.spark.tiling._
 import geotrellis.vector._
+import geotrellis.spark.io.kryo.KryoRegistrator
+
 import org.apache.accumulo.core.client.security.tokens.PasswordToken
 import org.apache.spark._
 import org.apache.spark.rdd._
+import org.apache.spark.serializer.KryoSerializer
 
+import java.io.File
 import scala.io.StdIn
 
 /**
@@ -40,9 +42,9 @@ object MultibandLandsatIngest {
     // Setup Spark to use Kryo serializer.
     val conf = new SparkConf()
       .setMaster("local[*]")
-      .setAppName("Spark LC Ingest")
-      .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
-      .set("spark.kryo.registrator", "geotrellis.spark.io.kryo.KryoRegistrator")
+      .setAppName("Spark Landsat8 Ingest")
+      .set("spark.serializer", classOf[KryoSerializer].getName)
+      .set("spark.kryo.registrator", classOf[KryoRegistrator].getName)
 
     implicit val sc = new SparkContext(conf)
 
