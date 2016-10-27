@@ -9,9 +9,9 @@
 * [GeoTrellis](https://github.com/geotrellis/geotrellis) `1.0.0-SNAPSHOT`
 * [GeoMesa](https://github.com/locationtech/geomesa/) `1.2.6`
 * [GeoDocker cluster](https://github.com/geotrellis/geodocker-cluster) `latest`
-* [Spark](http://spark.apache.org/) `2.0`
-* [Hadoop](http://hadoop.apache.org/) `2.7.3`
-* [Accumulo](http://accumulo.apache.org/) `1.7.2`
+* [Spark](http://spark.apache.org/) `2.x`
+* [Hadoop](http://hadoop.apache.org/) `2.7.x`
+* [Accumulo](http://accumulo.apache.org/) `1.7.x`
 
 ## Tutorial description (each example has additional informtion in comments)
 
@@ -23,6 +23,8 @@
   * An example of a hand written ingest job
 * [CreateNDVIPng.scala](src/main/scala/com/azavea/mesatrellis/raster/CreateNDVIPng.scala)
   * An example of a hand written ingest job
+* [GeoMesaQuery](src/main/scala/com/azavea/mesatrellis/feature/GeoMesaQuery.scala)
+  * An example of GeoMesa ingesting / querying
 
 ## Building assembly
 
